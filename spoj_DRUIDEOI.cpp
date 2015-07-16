@@ -1,122 +1,82 @@
 #include<iostream>
 #include<bits/stdc++.h>
 using namespace std;
-pair<int,int>p[100009];
-map<int,int>m;
-map<int,int>m2;
-void left(int arr[],int n)
+typedef  long long int ll;
+void solve(vector<ll>&arr, vector<ll>&result)
 {
-    int k=0;
-    for(int i=1;i<=n;i++)
+    vector< pair<ll,ll> >p;
+    for(ll i=0;i<arr.size();i++)
     {
-        int next=-1;
-        for(int j=i-1;j>0;j--)
+        while(p.size()&&arr[i]>=p.back().first)
         {
-            if(arr[j]>arr[i])
-            {
-                next=arr[j];
-                //cout<<next<<" ";
-                break;
-            }
+            p.pop_back();
         }
-        if(next!=-1)
+        if(p.size())
         {
-           //printf("%d %d \n",next,m[next]);
-           p[k++].first=m[next];
+            result[i]=p.back().second;
         }
-        else
-        {
-            for(int j=n;j>i;j--)
-            {
-                if(arr[j]>arr[i])
-                {
-                    next=arr[j];
-                    break;
-                }
-            }
-            if(next!=-1)
-                {
-                    //printf("%d %d \n",next,m[next]);
-                   p[k++].first=m[next];
-                }
-                else
-                {
-                     //printf("%d %d \n",next,next);
-                   p[k++].first=next;
-                }
-        }
+        p.push_back(make_pair(arr[i],i));
     }
-
+    //cout<<arr.size()<< endl;
+    for(ll i=0;i<arr.size();i++)
+    {
+        while(p.size()&&arr[i]>=p.back().first)
+        {
+            p.pop_back();
+        }
+        if(p.size())
+        {
+            result[i]=p.back().second;
+        }
+        p.push_back(make_pair(arr[i],i));
+    }
+    /*for(int i=0;i<arr.size();i++)
+    {
+        cout<<result[i]<<" ";
+    }*/
 }
-
 int main()
 {
-	freopen("test.txt","r",stdin);
-	int t;
-	scanf("%d",&t);
-	while(t--)
-	{
-		int n;
-		scanf("%d",&n);
-		 int arr[n+5];
-        bool visited[n+5];
-        memset(visited,false,sizeof(visited));
-		for(int i=1;i<=n;i++)
-		{
-			scanf("%d",&arr[i]);
-			if(!visited[arr[i]])
-            {
-                m[arr[i]]=i;
-            }
-            visited[arr[i]]=true;
-            m2[arr[i]]=i;
+    freopen("test.txt","r",stdin);
+    int t;
+    scanf("%d",&t);
+    while(t--)
+    {
+    ll n;
+    scanf("%lld",&n);
+    vector<ll>arr;
+    for(ll i=0;i<n;i++)
+    {
+        ll x;
+        scanf("%lld",&x);
+        arr.push_back(x);
+    }
+    vector<ll>left(n,-2);
+    vector<ll>right(n,-2);
 
-		}
-		int k=0;
-		for(int i=1;i<=n;i++)
-		{
-		   int  next=-1;
-			for(int j=i+1;j<=n;j++)
-			{
-				if(arr[i]<arr[j])
-				{
-				    next=arr[j];
-					//printf("%d %d \n",arr[i],m[arr[i]]);
-					break;
-				}
-			}
-			if(next!=-1)
-			p[k++].second=m2[next];
-			else
-            {
-                for(int j=1;j<i;j++)
-                {
-                    if(arr[j]>arr[i])
-                    {
-                        next=arr[j];
-                        break;
-                    }
-                }
-                if(next!=-1)
-                {
-                    //printf("%d %d \n",next,m[next]);
-                    p[k++].second=m2[next];
-                }
-                else
-                {
-                    //printf("%d %d\n",next,next);
-                    p[k++].second=next;
-                }
-            }
-		}
+    solve(arr,left);
+    reverse(arr.begin(),arr.end());
+    solve(arr,right);
+    reverse(right.begin(),right.end());
+    for(int i=0;i<arr.size();i++)
+    {
+        if(right[i]!=-2)
+        {
+            right[i]=n-right[i]-1;
+        }
+    }
+    for(int i=0;i<arr.size();i++)
+    {
+        printf("%lld %lld\n",left[i]+1,right[i]+1);
+    }
 
-left(arr,n);
-for(int i=0;i<k;i++)
-{
-    printf("%d %d \n",p[i].first,p[i].second);
-}
-cout<<endl;
-}
-	return 0;
 
+    /*vector<ll>::iterator it;
+    for(it=arr.begin();it!=arr.end();it++)
+    {
+        cout<<*it<<" ";
+    }
+    cout<<endl;*/
+    }
+        return 0;
 }
